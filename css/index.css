@@ -1,0 +1,102 @@
+
+.my-swipe .van-swipe-item {
+    color: #fff;
+    font-size: 20px;
+    line-height: 150px;
+    text-align: center;
+	height: 50;
+  }
+
+.radiolabel{
+	padding-left: 5px;
+	padding-top: -5px;
+}
+
+input[type=radio]:after{
+
+	     width: 10px;
+	     height: 15px;
+	     top: 0;
+	     content: "";
+	     background-color: #fff;
+	     display: inline-block;
+	     visibility: visible;
+	     padding: 0px 3px;
+		 margin-top: -2px;
+		 margin-left: -2px;
+	     border-radius: 50%;
+		 border: solid 1px;
+		 border-color: #598DF3;
+	
+}
+input[type=radio]:checked:before {
+	
+	margin-top: -6px;
+    content: "✓";
+    display: block;
+    position: relative;
+    top: 3px;
+    left: -2px;
+    width: 6px;
+    height: 6px;
+	padding: 0px 3px;
+    color: #598DF3;
+    font-weight: 400;
+    z-index: 8;
+}
+
+.radioClass:checked + .radiolabel{
+	color: #598DF3;
+}
+
+ 
+.nav_img{
+	
+	margin-left: 10px;
+	width: 11px;
+	height: 19px;
+	padding-left: -10px;
+}
+
+.nav_title{
+	
+}
+.banner{
+	margin: 0;
+	padding: 0;
+}
+
+.banner_img{
+
+	
+}
+.mui-input-row{
+	display: flex;
+	flex-direction: row;
+}
+
+.textarea{
+	color:#9E9E9E ;
+	padding-top: 23px;
+	width: 100%;
+	height: 144px;
+	background-color: #F9F9F9;
+	border: #F9F9F9;
+    border-radius: 8pt;
+	border: solid 0px;
+	font-size: 12px;
+	outline:none;
+}
+.button{
+	    width: 100%;
+	    height:80px;
+		margin-top: 40px;
+		background-image: url(../imsge/btn.jpg);
+	    background-size: 100% 100%;
+		background-color: transparent;
+		font-size: 18px;
+		border: none;
+		border: solid 0px;
+		outline:none;
+		color: white;
+}

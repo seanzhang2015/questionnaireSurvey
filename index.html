@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>物业管理满意度调查</title>
+	<script src="./js/vue.js"></script>
+	<script src="./js/axios.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vant@2.2/lib/vant.min.js"></script>
+	<script src="https://unpkg.com/vue-lazyload/vue-lazyload.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.8/lib/index.css">
+	<!-- <script src="./request/https.js"></script> -->
+	<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+	<link href="./css/index.css" rel="stylesheet" />
+</head>
+
+<body>
+
+	 <div>
+
+		<div class="banner">
+		</div>
+		
+		<div style="font-size: 18px; font-weight: 600;" id="app">
+
+		 <!-- <div> -->
+<!-- 			 <van-swipe  :height="300" class = "my-swipe" :autoplay="3000" indicator-color="white">
+			 	  <van-swipe-item v-for="(img,m) in images" style="padding:0px;">  
+				   <img style="height: 300px;" :src = "img" />
+				  </van-swipe-item>	
+			 </van-swipe>
+		 </div> -->
+		<div class="banner">
+			<img class="banner_img" :src=image width=100% height="200">
+		</div><strong></strong>
+			
+			
+			<div v-for="(x,index) in titles" style="padding: 15px;">
+
+				<label>{{index+1}}.{{x.title}}</label>
+
+				<div style="font-size: 14px;">
+
+					<div style="padding-top: 0px;" id="app">
+							
+						<form>
+							<div v-for="(t, i) in x.item" class="mui-input-row">
+								<p>
+									<input name="radio" type="radio" :value="i" v-model="x.val" class="radioClass">
+									<label class="radiolabel">{{t.item}}</label>
+								</p>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div style="margin-top: 30px;">
+				<textarea id="textareaId" class="textarea" v-model="remarks" placeholder="您有其他意见与建议，也可以在此填写~" maxlength="150"></textarea>
+			</div>
+			<button type="button" id="buttonId" class="button" @click="submit">提交</button>
+		</div>
+
+	</div> 
+
+	<script type="text/javascript">
+	  
+	  new Vue({
+			el: '#app',
+			data() {
+				return {
+					item: [
+						{
+							item: "0分（无服务体验）",
+							val: 0
+						},
+						{
+							item: "1分（非常不满意)",
+							val: 1
+						},
+						{
+							item: "2分（不满意)",
+							val: 2
+						},
+						{
+							item: "3分（一般)",
+							val: 3
+						},
+						{
+							item: "4分（满意）",
+							val: 4
+						},
+						{
+							item: "5分（非常满意）",
+							val: 5
+						}
+					],
+					titles: [],
+					arr0: [],
+					arr1: [],
+					remarks: '',
+					baseURL:'',
+					image:'',
+				}
+			},
+			mounted: function () {
+				
+				this.item_codes = this.getQueryVariable("item_codes")
+				this.satisfaction_id = this.getQueryVariable("satisfaction_id")
+				this.evaluator = decodeURIComponent(this.getQueryVariable("evaluator"))
+				this.sys_room = decodeURIComponent(this.getQueryVariable("sys_room"))
+				this.telephone = this.getQueryVariable("telephone")
+				this.baseURL = this.getQueryVariable("baseURL")
+				this.image = this.getQueryVariable("image")
+				this.remarks = decodeURIComponent(document.getElementById("textareaId").value)
+				
+				// this.sys_room ="1%E6%A0%8B%E6%97%A0%E5%8D%95%E5%85%830101,%E9%83%91%E5%B7%9E%E6%99%AE%E7%BD%97%E7%90%86%E6%83%B3%E5%9B%BD%E8%A5%BF6%E8%8B%91-1%E6%A0%8B-1%E5%8D%95%E5%85%83-0101%E6%88%BF,%E8%B1%AA%E5%A8%81%E7%A7%91%E6%8A%80%E5%A4%A7%E5%8E%A68B%E6%B7%B1%E5%9C%B3%E5%85%B4%E6%B5%B7%E7%89%A9%E8%81%94%E6%9C%AC%E9%83%A8%E8%B1%AA%E5%A8%81%E7%A7%91%E6%8A%80%E5%A4%A7%E5%8E%A68B%E4%B8%80%E5%8F%B7%E5%8A%9E%E5%85%AC%E5%AE%A4,%E5%8D%8E%E6%99%AF%E5%B3%B001%E6%B7%B1%E5%9C%B3%E4%B8%AD%E6%B5%B7%E5%8D%8E%E5%BA%AD-%E5%8D%8E%E6%99%AF%E5%B3%B0-1%E5%8D%95%E5%85%83-010B,4%E6%A0%8B%E6%97%A0%E5%8D%95%E5%85%830201,%E7%A0%94%E5%8F%91%E4%B8%AD%E5%BF%83&evaluator=%E7%AB%A0%E6%99%93%E6%95%8F"
+				// this.image = "https://xiaoqi-image.obs.cn-north-1.myhuaweicloud.com/1595822485448.jpeg"
+				// this.satisfaction_id = "2"
+				// this.evaluator ="zxm"
+				// this.sys_room ="1栋无单元0101,郑州普罗理想国西6苑-1栋-1单元-0101房,豪威科技大厦8B深圳兴海物联本部豪威科技大厦8B一号办公室,华景峰01深圳中海华庭-华景峰-1单元-010B,4栋无单元0201,研发中心"
+				// this.baseURL = "https://mr.xymind.net:7200"
+				// this.telephone = "18002581600"
+				// this.item_codes= "ZZ0206"
+				this.listData()
+			},
+			methods: {
+				getQueryVariable(variable) {
+								var query = window.location.search.substring(1);
+								var vars = query.split("&");
+								for (var i=0;i<vars.length;i++) {
+									var pair = vars[i].split("=");
+									if(pair[0] == variable){return pair[1];}
+								}
+								return(false);
+				},
+				listData() {
+					vant.Toast.loading({
+						 duration:0,
+					     message: '加载中...',
+					     forbidClick: true,
+					    });
+						axios.post(this.baseURL+'/api/satisfaction/questionnaire/get_satisfaction_content',
+						 // axios.post('https://iot.xhmind.com/api/satisfaction/questionnaire/get_satisfaction_content',
+							{
+								satisfaction_id:this.satisfaction_id,
+							}
+						).then(({ data: { status, data } }) =>{
+						vant.Toast.loading({
+										 duration:0.1,
+									     message: '',
+									     forbidClick: true,
+									    });
+					if (status === 200){
+					  this.titles = data.contents.map((item, index) => {
+				       return {
+								id: item.id,
+								title: item.content,
+								val: 0,
+								item: this.item,
+					}
+	             })
+			}   
+					  })
+					  .catch(function (error) {
+						 
+						 vant.Toast.fail('获取问卷失败！');
+						 document.getElementById("buttonId").setAttribute("disabled", true);
+						 document.getElementById('buttonId').style.opacity = 0.5;
+						
+					  });
+					// axios.get(this.baseURL+'/api/satisfaction/questionnaire', {
+					// 		params: {
+					// 			// item_codes: JSON.parse(this.item_codes),
+					// 			item_codes:this.item_codes? this.item_codes.split(',') : [],
+					// 			satisfaction_id:this.satisfaction_id,
+					// 			origin: "2"
+					// 		},
+					// 	})
+					// 	.then(({ data: { status, data } }) => {
+							
+					// 		if (status === 200) {
+					// 			this.titles = data.map((item, index) => {
+					// 				return {
+					// 					id: item.id,
+					// 					title: item.name,
+					// 					val: 0,
+					// 					item: this.item
+					// 				}
+					// 			})
+					// 			vant.Toast.loading({
+					// 				 duration:0.1,
+					// 			     message: '',
+					// 			     forbidClick: true,
+					// 			    });
+					// 		}
+					// 	})
+					// 	.catch(function (error) {
+					// 		console.log(error);
+					// 	})
+				},   
+				submit() {
+					// this.$bridge.callhandler('ObjC Echo', params, (data) => {
+					// 	  // 处理返回数据
+					// 	  vant.Toast.loading({
+					// 	  	 duration:0,
+					// 	       message: '提交中...111',
+					// 	       forbidClick: true,
+					// 	      });
+					// 	})
+					
+					vant.Toast.loading({
+						 duration:0,
+                         message: '提交中...',
+                         forbidClick: true,
+                        });
+					axios.post(this.baseURL+'/api/satisfaction/answers', 
+						{
+							satisfaction_id: this.satisfaction_id,
+							evaluator: this.evaluator,
+							sys_room: this.sys_room,
+							telephone: this.telephone,
+							remarks: this.remarks,
+							assessment_result: this.titles.map(item => {
+								return {
+									satisfaction_content_id: item.id,
+									score: item.val
+								}
+							})
+						}
+					)
+					  .then(function (response) {
+						 document.getElementById("buttonId").setAttribute("disabled", true);
+						 document.getElementById('buttonId').style.opacity = 0.5;
+						 vant.Toast.success('提交成功，谢谢参与！');
+					   
+					  })
+					  .catch(function (error) {
+						 vant.Toast.fail('提交失败！');
+						
+					  });
+				},
+				
+			}
+		})
+	</script> 
+	
+	<!-- <script>
+		  function setupWebViewJavascriptBridge(callback) {
+		        if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+		        if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+		        window.WVJBCallbacks = [callback];
+		        var WVJBIframe = document.createElement('iframe');
+		            WVJBIframe.style.display = 'none';
+		            WVJBIframe.src = 'https://__bridge_loaded__';
+		            document.documentElement.appendChild(WVJBIframe);
+		            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+		    
+		    }
+		
+		    setupWebViewJavascriptBridge(function(bridge) {bridge.registerHandler('changeBGColor',function(data,responseCallback){// alert('aaaaaa');
+		        document.body.style.backgroundColor = "orange";
+		        document.getElementById("returnValue").value = data;
+		        alert(data)
+		    });
+		
+			})
+	</script> -->
+	
+</body>
+
+</html>
